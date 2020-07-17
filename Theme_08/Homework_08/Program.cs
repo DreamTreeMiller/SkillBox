@@ -8,8 +8,8 @@ namespace Homework_08
 {
     public class Department
     {
-        private ushort    depID;
-        public ushort     DepID                           // От 1 до 9999
+        private int    depID;
+        public int     DepID                           // От 1 до 9999
         { 
             get { return this.depID; } 
             set
@@ -26,21 +26,35 @@ namespace Homework_08
             get { return "Отдел_" + $"{depID:0000}"; } 
         }
         public DateTime OpeningDate { get; set; }
-        public uint     NumOfEmpl   { get; set; }
+        public int     NumOfEmpl   { get; set; }
 
         public string   Projects    { get; set; }
         public Department() { }         // Надо явно объявлять для сериализации в XML
-        public Department(ushort depID, uint numOfEmpl)
+  
+        /// <summary>
+        /// Конструктор. Создает отдел. Дата отдела - текущая. Поле проекты - No projects yet.
+        /// </summary>
+        /// <param name="depID">Номер отдела</param>
+        /// <param name="numOfEmpl">Количество сотрудников</param>
+        public Department(int depID, int numOfEmpl)
 		{
             DepID = depID;
             NumOfEmpl = numOfEmpl;
             OpeningDate = DateTime.Now;
-            Projects = "No projcets yet";
+            Projects = "No projects yet";
 		}
 
         /// Предикат проверки номер департамента для List.Find
         /// https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1.find?view=netcore-3.1#System_Collections_Generic_List_1_Find_System_Predicate__0__
 	    /// Ну и другие тоже надо писать
+        
+        public override string ToString()
+		{
+            return $"{DepName,12}" +
+                   $", создан {OpeningDate,12:dd.MM.yyyy}" +
+                   $", кол-во сотрудников: {NumOfEmpl,8}" +
+                   $", {Projects}";
+		}
     }
 
     public class Employee
@@ -48,11 +62,32 @@ namespace Homework_08
         public int      ID          { get; set; }
         public string   FirstName   { get; set; }
         public string   LastName    { get; set; }
-        public sbyte    Age         { get; set; }
-        public string   Dept        { get; set; }
+        public int    Age         { get; set; }
+        private int  depID;
+        public string   DepName     { get { return "Отдел_" + $"{depID:0000}"; } }
         public int      Salary      { get; set; }
-        public byte     NumOfProj   { get; set; }
+        public int     NumOfProj   { get; set; }
         public Employee() { }        // Надо явно объявлять для сериализации в XML
+        public Employee(int id, string firstN, string lastN, int age, int depNum, int salary, int nofpr)
+		{
+            ID          = id;
+            FirstName   = firstN;
+            LastName    = lastN;
+            Age         = age;
+            depID       = depNum;
+            Salary      = salary;
+            NumOfProj   = nofpr;
+		}
+        public override string ToString()
+		{
+            return $"{ID,8}" +
+                   $"{FirstName,10}" +
+                   $"{LastName,16}" +
+                   $"{Age,12}" +
+                   $"{DepName,16}" +
+                   $"{Salary,10:###,###}" +
+                   $"{NumOfProj,8}";
+        }
     }
 
     public class Organization
@@ -78,12 +113,13 @@ namespace Homework_08
         /// <returns>0  - если отдел успешно открыт</returns>
         /// <returns>-1 - если номер отдела меньше или равен 0, или больше 9999</returns>
         /// <returns>-2 - если отдел с таким номером уже существует</returns>
-        public int OpenDept(ushort depNum, uint numOfEmpl)
+        public int OpenDept(int depNum, int numOfEmpl)
         {
             if (depNum <= 0 || depNum > 9_999) return -1;  // Номер отдела от 1 до 9_999
             if (DeptNumExists(depNum)) return -2;            // Департамент с таким номером уже существует
             Department newDep = new Department(depNum, numOfEmpl);
             Departments.Add(newDep);
+            numberOfDepts++;
             return 0;
 
         }
@@ -94,20 +130,63 @@ namespace Homework_08
         /// <param name="depNum">Номер отдела</param>
         /// <returns>true - существует</returns>
         /// <returns>false - нет</returns>
-        public bool DeptNumExists(uint depNum)
+        private bool DeptNumExists(int depNum)
 		{
             return true;
 		}
 
-        public bool CloseDept(ushort depID)
+        public bool CloseDept(int depID)
 		{
+            numberOfDepts--;
             return true;
+		}
+
+        /// <summary>
+        /// Создает заданное количество отделов, в каждом не более maxEmp сотрудников
+        /// </summary>
+        /// <param name="maxDep">Количество отделов для создания</param>
+        /// <param name="maxEmp">Максимальное кол-во сотрудников в одном отделе</param>
+        /// <returns>Результат записывается в коллекции Departments и Employees</returns>
+        public void GenerateDeptAndEmployees(int maxDep, int maxEmp)
+		{
+            Random r = new Random();
+            int nEmp;
+            totalEmployees = 1;
+            numberOfDepts = maxDep;
+            for (int i=1; i <= maxDep; i++)
+			{
+                nEmp = r.Next(1, maxEmp + 1);
+                Departments.Add(new Department(i, nEmp));
+                for (int j=1; j <= nEmp; j++)
+				{
+                    Employees.Add(new Employee(totalEmployees++,                        // уникальный номер сотрудника
+                                               $"Имя_{r.Next(1, 1000)}",                // Имя
+                                               $"Фамилия_{r.Next(1, 100_000)}",         // Фамилия
+                                               r.Next(19, 60),                          // возраст
+                                               i,                                       // номер отдела
+                                               r.Next(4, 21) * 5_000,                   // зарплата
+                                               r.Next(1, 6)));                          // кол-во проектов
+				}
+			}
+		}
+
+        public void PrintDepts()
+		{
+            foreach (var d in Departments)
+                Console.WriteLine(d.ToString());
+		}
+
+        public void PrintEmployees()
+		{
+            foreach (var e in Employees)
+                Console.WriteLine(e.ToString());
 		}
     }
     class Program
     {
         static void Main(string[] args)
         {
+            #region Домашнее задание 8
             /// Создать прототип информационной системы, в которой есть возможност работать со структурой организации
             /// В структуре присутствуют департаменты и сотрудники
             /// Каждый департамент может содержать не более 1_000_000 сотрудников.
@@ -182,12 +261,14 @@ namespace Homework_08
             ///  2   Имя_2     Фамилия_2          21         Отдел_2            20000                      3 
             ///  5   Имя_5     Фамилия_5          22         Отдел_2            20000                      3 
             /// 
+            #endregion
 
-
-
-            List<Employee> allWorkers = new List<Employee>();
-
-            allWorkers.Sort()
+            Console.InputEncoding = System.Text.Encoding.Unicode;
+            Console.OutputEncoding = System.Text.Encoding.Unicode;
+            Organization Apple = new Organization();
+            Apple.GenerateDeptAndEmployees(10, 20);
+            Apple.PrintDepts();
+            Apple.PrintEmployees();
 
 
 
