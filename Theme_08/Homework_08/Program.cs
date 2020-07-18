@@ -284,7 +284,32 @@ namespace Homework_08
         }
 
         public void SortByAgeThenSalary(int startIndex, int count)
-        { 
+        {
+            // Нам передали сотрудников одного отдела.
+            // Начальный индекс этого отдела и количество сотрудников в отделе
+            // Отсортируем сначала всех сотрудников по возрасту, 
+            SortEmployeesByAge(startIndex, count);
+
+            // Потом в каждом возрасте отсортируем по зарплате.
+            // Начальный иднекс по зарплате
+            int salarySI = startIndex;
+            int salaryNextI;
+
+            // Начинаем с наименьшего возраста и до конца куска списка
+            int i = 0;
+            while (i < count-1)
+            {
+                int currAge = Employees[startIndex].Age;
+                int nextIndex =
+                    // Ищем индекс, с которого начинаются сотрудники следующего возраста,
+                    // Следующий возраст - это тот, который не равен текущему
+                    Employees.FindIndex(startIndex, delegate (Employee x)
+                    {
+                        return !x.Age.Equals(currAge);
+                    });
+                Employees.Sort(startIndex, nextIndex - startIndex, new CompareBySalary());
+                startIndex = nextIndex;
+            }
 
         }
 
@@ -313,7 +338,6 @@ namespace Homework_08
                     });
                 SortByAgeThenSalary(startIndex, nextIndex - startIndex);
                 startIndex = nextIndex;
-                Console.WriteLine(startIndex);
 			}
             SortByAgeThenSalary(startIndex, Employees.Count - startIndex);
 		}
