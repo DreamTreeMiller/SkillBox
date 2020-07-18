@@ -9,8 +9,8 @@ namespace Homework_08
 {
     public class Department
     {
-        private int    depID;
-        public int     DepID                           // От 1 до 9999
+        private int     depID;
+        public int      DepID                           // От 1 до 9999
         { 
             get { return this.depID; } 
             set
@@ -21,13 +21,13 @@ namespace Homework_08
 			}
         }
 
-        private string depName;
+        private string  depName;
         public string   DepName                         // Сделаем стандартным Отдел_хххх - 
-        {                                               // хххх - цифры от 0001 до 9999
+        {                                               // хххх - цифры от 1 до 9999
             get { return "Отдел_" + $"{depID}"; } 
         }
         public DateTime OpeningDate { get; set; }
-        public int     NumOfEmpl   { get; set; }
+        public int      NumOfEmpl   { get; set; }
 
         public string   Projects    { get; set; }
         public Department() { }         // Надо явно объявлять для сериализации в XML
@@ -72,7 +72,7 @@ namespace Homework_08
 		//	return x.Age.CompareTo(y.Age);
 		//}
 
-		private int     depID;
+		public int     depID;
         public string   DepName     { get { return "Отдел_" + $"{depID}"; } }
         //public static int CompareByDepName(Employee x, Employee y)
         //{
@@ -283,6 +283,40 @@ namespace Homework_08
             Employees.Sort(startIndex, count, new CompareBySalary());
         }
 
+        public void SortByAgeThenSalary(int startIndex, int count)
+        { 
+
+        }
+
+        public void SortByDepAgeSalary()
+		{
+            if (numberOfDepts == 1)
+            {
+                SortByAgeThenSalary(0, Employees.Count);
+                return;
+            }
+            // Сортируем всех сотрудников по номеру отдела от 1 до макс. номера отдела
+            SortEmployeesByDep();
+            // Начальный индекс сотрудника, с которого надо сортировать внутри отдела
+            int startIndex = 0;
+
+            // Начинаем с первого отдела и до предпоследнего.
+            for (int currDep = 1; currDep < numberOfDepts; currDep++ )
+			{
+                string currDepName = Employees[startIndex].DepName;
+                int nextIndex =
+                    // Ищем индекс, с которого начинаются сотрудники следующего отдела,
+                    // Следующий отдел - это тот, который не равен текущему
+                    Employees.FindIndex(startIndex, delegate (Employee x)
+                    {
+                        return !x.DepName.Equals(currDepName);
+                    });
+                SortByAgeThenSalary(startIndex, nextIndex - startIndex);
+                startIndex = nextIndex;
+                Console.WriteLine(startIndex);
+			}
+            SortByAgeThenSalary(startIndex, Employees.Count - startIndex);
+		}
     }
     class Program
     {
@@ -374,6 +408,7 @@ namespace Homework_08
             Console.WriteLine("\nСортировка по номеру отдела\n");
             Apple.SortEmployeesByDep();
             Apple.PrintEmployees();
+            Apple.SortByDepAgeSalary();
             Console.WriteLine("\nСортировка по возрасту\n");
             Apple.SortEmployeesByAge(0, Apple.Employees.Count - 5);
             Apple.PrintEmployees();
