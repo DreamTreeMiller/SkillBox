@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -23,7 +24,7 @@ namespace Homework_08
         private string depName;
         public string   DepName                         // Сделаем стандартным Отдел_хххх - 
         {                                               // хххх - цифры от 0001 до 9999
-            get { return "Отдел_" + $"{depID:0000}"; } 
+            get { return "Отдел_" + $"{depID}"; } 
         }
         public DateTime OpeningDate { get; set; }
         public int     NumOfEmpl   { get; set; }
@@ -62,11 +63,35 @@ namespace Homework_08
         public int      ID          { get; set; }
         public string   FirstName   { get; set; }
         public string   LastName    { get; set; }
-        public int    Age         { get; set; }
-        private int  depID;
-        public string   DepName     { get { return "Отдел_" + $"{depID:0000}"; } }
+        public int      Age         { get; set; }
+		//public static int CompareByAge(Employee x, Employee y)
+		//{
+		//	if (x == null && y == null) return 0;           // Сотрудники идентичны
+		//	if (x == null) return -1;                       // x - null, y not null, y is greater
+		//	if (y == null) return  1;                       // x is not null, y is null, x is greater
+		//	return x.Age.CompareTo(y.Age);
+		//}
+
+		private int     depID;
+        public string   DepName     { get { return "Отдел_" + $"{depID}"; } }
+        //public static int CompareByDepName(Employee x, Employee y)
+        //{
+        //    if (x == null && y == null) return 0;           // Сотрудники идентичны
+        //    if (x == null) return -1;                       // x - null, y not null, y is greater
+        //    if (y == null) return 1;                        // x is not null, y is null, x is greater
+        //    return x.DepName.CompareTo(y.DepName);
+        //}
+
         public int      Salary      { get; set; }
-        public int     NumOfProj   { get; set; }
+        //public static int CompareBySalary(Employee x, Employee y)
+        //{
+        //    if (x == null && y == null) return 0;           // Сотрудники идентичны
+        //    if (x == null) return -1;                       // x - null, y not null, y is greater
+        //    if (y == null) return  1;                       // x is not null, y is null, x is greater
+        //    return x.Salary.CompareTo(y.Salary);
+        //}
+
+        public int      NumOfProj   { get; set; }
         public Employee() { }        // Надо явно объявлять для сериализации в XML
         public Employee(int id, string firstN, string lastN, int age, int depNum, int salary, int nofpr)
 		{
@@ -87,6 +112,34 @@ namespace Homework_08
                    $"{DepName,16}" +
                    $"{Salary,10:###,###}" +
                    $"{NumOfProj,8}";
+        }
+    }
+
+    /// <summary>
+    /// Компаратор для поля возраст
+    /// </summary>
+    class CompareByAge : IComparer<Employee>
+	{
+        public int Compare(Employee x, Employee y)
+        {
+            if (x == null && y == null) return 0;           // Сотрудники идентичны
+            if (x == null) return -1;                       // x - null, y not null, y is greater
+            if (y == null) return 1;                       // x is not null, y is null, x is greater
+            return x.Age.CompareTo(y.Age);
+        }
+    }
+
+    /// <summary>
+    /// Компаратор для поля зарплата
+    /// </summary>
+    class CompareBySalary : IComparer<Employee>
+    {
+        public int Compare(Employee x, Employee y)
+        {
+            if (x == null && y == null) return 0;           // Сотрудники идентичны
+            if (x == null) return -1;                       // x - null, y not null, y is greater
+            if (y == null) return  1;                       // x is not null, y is null, x is greater
+            return x.Salary.CompareTo(y.Salary);
         }
     }
 
@@ -149,6 +202,14 @@ namespace Homework_08
         /// <returns>Результат записывается в коллекции Departments и Employees</returns>
         public void GenerateDeptAndEmployees(int maxDep, int maxEmp)
 		{
+            if (maxDep*maxEmp > 1_000_000_000)
+			{
+                Console.WriteLine("Не могу принять такие данные!!!\n" +
+                                  "Произведение кол-ва отделов на макс. кол-во сотрудников в отделе больше миллиарда!\n" +
+                                  "Возможна ошибка переполнения.\n" +
+                                  "Введите другие данные.");
+                return;
+			}
             Random r = new Random();
             int nEmp;
             totalEmployees = 1;
@@ -170,17 +231,58 @@ namespace Homework_08
 			}
 		}
 
+        /// <summary>
+        /// Печатает список всех департаметов
+        /// </summary>
         public void PrintDepts()
 		{
             foreach (var d in Departments)
                 Console.WriteLine(d.ToString());
 		}
 
+        /// <summary>
+        /// Печатает список всех сотрудников
+        /// </summary>
         public void PrintEmployees()
 		{
             foreach (var e in Employees)
                 Console.WriteLine(e.ToString());
 		}
+
+        /// <summary>
+        /// Сортирует список сотрудников по полю Отдел
+        /// </summary>
+        public void SortEmployeesByDep()
+		{
+            Employees.Sort(delegate (Employee x, Employee y)
+            {
+                if (x == null && y == null) return 0;           // Сотрудники идентичны
+                if (x == null) return -1;                       // x - null, y not null, y is greater
+                if (y == null) return 1;                        // x is not null, y is null, x is greater
+                return x.DepName.CompareTo(y.DepName);
+            });
+		}
+
+        /// <summary>
+        /// Сортирует часть списка сотрудников (одного отдела) по полю Возраст
+        /// </summary>
+        /// <param name="startIndex">Индекс элемента, с которого начать сортировку</param>
+        /// <param name="count">Количество элементов для сортировки</param>
+        public void SortEmployeesByAge(int startIndex, int count)
+		{
+            Employees.Sort(startIndex, count, new CompareByAge());
+        }
+
+        /// <summary>
+        /// Сортирует часть списка сотрудников (одного отдела) по полю Зарплата
+        /// </summary>
+        /// <param name="startIndex">Индекс элемента, с которого начать сортировку</param>
+        /// <param name="count">Количество элементов для сортировки</param>
+        public void SortEmployeesBySalary(int startIndex, int count)
+        {
+            Employees.Sort(startIndex, count, new CompareBySalary());
+        }
+
     }
     class Program
     {
@@ -266,12 +368,18 @@ namespace Homework_08
             Console.InputEncoding = System.Text.Encoding.Unicode;
             Console.OutputEncoding = System.Text.Encoding.Unicode;
             Organization Apple = new Organization();
-            Apple.GenerateDeptAndEmployees(10, 20);
+            Apple.GenerateDeptAndEmployees(5, 10);
             Apple.PrintDepts();
             Apple.PrintEmployees();
-
-
-
+            Console.WriteLine("\nСортировка по номеру отдела\n");
+            Apple.SortEmployeesByDep();
+            Apple.PrintEmployees();
+            Console.WriteLine("\nСортировка по возрасту\n");
+            Apple.SortEmployeesByAge(0, Apple.Employees.Count - 5);
+            Apple.PrintEmployees();
+            Console.WriteLine("\nСортировка по зарплате\n");
+            Apple.SortEmployeesBySalary(0, Apple.Employees.Count);
+            Apple.PrintEmployees();
 
         }
     }
