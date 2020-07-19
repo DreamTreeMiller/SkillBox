@@ -86,19 +86,9 @@ namespace Temp
 
 		static void Main(string[] args)
         {
-			SortedList<KeyStruct, string> Day = new SortedList<KeyStruct, string>(10);
-			KeyStruct key;
-			int i;
-			uint[] id = { 2020, 1987, 4, 777, 3000, 45, 500, 12, 2783, 1648 };
+			List<int> test = new List<int>() { 10, 10, 10, 10, 10, 10, 10, 15, 15, 15, 15, 15, 17};
 
-			for (i = 0; i<10; i++)
-			{
-				key = new KeyStruct(id[i], 2020, 06, 22, 13, 43);
-				Day.Add(key, $"This is string {i}");
-			}
-
-			foreach (var e in Day) Console.WriteLine($"{e.Key.ID, 4} " + $"{e.Value}");
-			Console.WriteLine();
+			Console.WriteLine(test.FindIndex(0, 13, delegate (int x) { return x == 9; }));
 
 
 
