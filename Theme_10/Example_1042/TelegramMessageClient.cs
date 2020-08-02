@@ -39,7 +39,7 @@ namespace Example_1042
             });
         }
 
-        public TelegramMessageClient(MainWindow W, string PathToken = @"D:\ Work\SkillBox\token")
+        public TelegramMessageClient(MainWindow W, string PathToken = "token")
         {
             this.BotMessageLog = new ObservableCollection<MessageLog>();
             this.w = W;
@@ -51,7 +51,7 @@ namespace Example_1042
             bot.StartReceiving();
         }
 
-        public void SendMessage(string Text, string Id)
+        public void SendMessage(string Id, string Text)
         {
             long id = Convert.ToInt64(Id);
             bot.SendTextMessageAsync(id, Text);

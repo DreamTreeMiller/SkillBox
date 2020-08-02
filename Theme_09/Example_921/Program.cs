@@ -16,19 +16,18 @@ namespace Example_921
     {
         static void Main(string[] args)
         {
-            // http://t.me/BotFather
-            // @BotFather
-            //
-            // https://core.telegram.org/bots/api
-            // string token =  "4159465546AAEG3gCROdn7xLKAEpsTeRucVnMBEm12WcT";
-            string token = File.ReadAllText(@"D:\ Work\SkillBox\token");
+			// http://t.me/BotFather
+			// @BotFather
+			//
+			// https://core.telegram.org/bots/api
+			string token = File.ReadAllText(@"C:\Users\Tiller\OneDrive\DM\source\repos\Homework_09\token");
 
-            // https://telegram.org/
-            // https://core.telegram.org/api
-            // https://core.telegram.org/bots
-            // https://core.telegram.org/bots/samples How do I create a bot?
-            // https://core.telegram.org/bots/api How do bots work?
-            WebClient wc = new WebClient() { Encoding = Encoding.UTF8 };
+			// https://telegram.org/
+			// https://core.telegram.org/api
+			// https://core.telegram.org/bots
+			// https://core.telegram.org/bots/samples How do I create a bot?
+			// https://core.telegram.org/bots/api How do bots work?
+			WebClient wc = new WebClient() { Encoding = Encoding.UTF8 };
 
             int update_id = 0;
             string startUrl = $@"https://api.telegram.org/bot{token}/";

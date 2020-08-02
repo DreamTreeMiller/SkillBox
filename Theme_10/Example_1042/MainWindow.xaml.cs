@@ -33,7 +33,7 @@ namespace Example_1042
 
         private void btnMsgSendClick(object sender, RoutedEventArgs e)
         {
-            client.SendMessage(txtMsgSend.Text, TargetSend.Text);
+            client.SendMessage(TargetSend.Text, txtMsgSend.Text);
         }
     }
 }

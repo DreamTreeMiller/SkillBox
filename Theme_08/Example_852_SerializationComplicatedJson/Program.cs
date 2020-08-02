@@ -36,34 +36,34 @@ namespace Example_852_SerializationComplicatedJson
 			#region Create
 
 
-			//JArray array = new JArray();
+			JArray array = new JArray();
 
-			//JObject mainTree = new JObject();
-
-
-			//mainTree["ok"] = true;
-
-			//JObject o = new JObject();
-			//o["update_id"] = 1880746;
-			//o["message_id"] = 886;
-
-			//array.Add(o);
-			//array.Add(o);
-			//array.Add(o);
-
-			//mainTree["messages"] = array;
-
-			//JObject userObj = new JObject();
-			//userObj["id"] = 220310598;
-			//userObj["first_name"] = "С.K.";
-			//userObj["username"] = "sk";
-
-			//mainTree["user"] = userObj;
+			JObject mainTree = new JObject();
 
 
-			//string json = mainTree.ToString();
+			mainTree["ok"] = true;
 
-			//Console.WriteLine(json);
+			JObject o = new JObject();
+			o["update_id"] = 1880746;
+			o["message_id"] = 886;
+
+			array.Add(o);
+			array.Add(o);
+			array.Add(o);
+
+			mainTree["messages"] = array;
+
+			JObject userObj = new JObject();
+			userObj["id"] = 220310598;
+			userObj["first_name"] = "С.K.";
+			userObj["username"] = "sk";
+
+			mainTree["user"] = userObj;
+
+
+			string json = mainTree.ToString();
+
+			Console.WriteLine(json);
 
 			#endregion
 

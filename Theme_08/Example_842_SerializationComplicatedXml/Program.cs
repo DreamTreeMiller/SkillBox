@@ -11,58 +11,58 @@ namespace Example_842_SerializationComplicatedXml
     {
         static void Main(string[] args)
         {
-            #region XDocument.Parse
+			#region XDocument.Parse
 
 
-            //string xml = System.IO.File.ReadAllText("_weather.xml");
+			string xml = System.IO.File.ReadAllText("_weather.xml");
 
-            //var col = XDocument.Parse(xml)
-            //                   .Descendants("MMWEATHER")
-            //                   .Descendants("REPORT")
-            //                   .Descendants("TOWN")
-            //                   .Descendants("FORECAST")
-            //                   .ToList();
+			var col = XDocument.Parse(xml)
+							   .Descendants("MMWEATHER")
+							   .Descendants("REPORT")
+							   .Descendants("TOWN")
+							   .Descendants("FORECAST")
+							   .ToList();
 
-            //foreach (var item in col)
-            //{
-            //    Console.WriteLine($"\n\n{item}");
-            //}
+			foreach (var item in col)
+			{
+				Console.WriteLine($"\n\n{item}");
+			}
 
-            //Console.ReadLine(); Console.Clear();
+			Console.ReadLine(); Console.Clear();
 
-            //foreach (var item in col)
-            //{
-            //    Console.WriteLine("day: {0} month: {1} year: {2}",
-            //                        item.Attribute("day").Value,
-            //                        item.Attribute("month").Value,
-            //                        item.Attribute("year").Value);
-            //}
+			foreach (var item in col)
+			{
+				Console.WriteLine("day: {0} month: {1} year: {2}",
+									item.Attribute("day").Value,
+									item.Attribute("month").Value,
+									item.Attribute("year").Value);
+			}
 
-            //Console.ReadLine(); Console.Clear();
+			Console.ReadLine(); Console.Clear();
 
-            //foreach (var item in col)
-            //{
-            //    Console.WriteLine("min: {0} max: {1}",
-            //                        item.Element("TEMPERATURE").Attribute("min").Value,
-            //                        item.Element("TEMPERATURE").Attribute("max").Value);
-            //}
+			foreach (var item in col)
+			{
+				Console.WriteLine("min: {0} max: {1}",
+									item.Element("TEMPERATURE").Attribute("min").Value,
+									item.Element("TEMPERATURE").Attribute("max").Value);
+			}
 
-            //Console.ReadLine(); Console.Clear();
+			Console.ReadLine(); Console.Clear();
 
 
-            //string city = XDocument.Parse(xml)
-            //                       .Element("MMWEATHER")
-            //                       .Element("REPORT")
-            //                       .Element("TOWN")
-            //                       .Attribute("sname").Value;
+			string city = XDocument.Parse(xml)
+								   .Element("MMWEATHER")
+								   .Element("REPORT")
+								   .Element("TOWN")
+								   .Attribute("sname").Value;
 
-            //Console.WriteLine(city);
+			Console.WriteLine(city);
 
-            #endregion
+			#endregion
 
-            #region XDocument.Create
+			#region XDocument.Create
 
-            XElement myMMWEATHER = new XElement("MMWEATHER");
+			XElement myMMWEATHER = new XElement("MMWEATHER");
             XElement myTOWN = new XElement("TOWN");
             XElement myFORECAST = new XElement("FORECAST");
             XElement myTEMPERATURE = new XElement("TEMPERATURE");

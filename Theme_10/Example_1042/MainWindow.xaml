@@ -43,7 +43,7 @@
             <StackPanel>
                 <TextBlock x:Name="TargetSend" 
                            Text="{Binding ElementName=logList, Path=SelectedItem.Id}"
-                           Visibility="Collapsed"
+                           Visibility="Visible"
                            Margin="5"/>
                 
                 <TextBox x:Name="txtMsgSend" FontSize="20" Margin="5"/>

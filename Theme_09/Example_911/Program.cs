@@ -11,6 +11,8 @@ namespace Example_911
     {
         static void Main(string[] args)
         {
+            Console.InputEncoding = Encoding.UTF8;
+            Console.OutputEncoding = Encoding.UTF8;
             // Работа с сетью
 
             string url = @"audio_api.mp3";

@@ -12,6 +12,8 @@ namespace Example_913
     {
         static void Main(string[] args)
         {
+            Console.InputEncoding = Encoding.UTF8;
+            Console.OutputEncoding = Encoding.UTF8;
 
             var client = new WebClient();
 
