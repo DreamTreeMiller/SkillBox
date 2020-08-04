@@ -17,7 +17,7 @@ namespace Example_931
         static void Main(string[] args)
         {
 
-            string token = File.ReadAllText(@"D:\ Work\SkillBox\token");
+            string token = File.ReadAllText("token");
 
             #region exc
 
