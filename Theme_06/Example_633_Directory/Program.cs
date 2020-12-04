@@ -56,7 +56,7 @@ namespace Example_633_Directory
             //directoryInfo.GetDirectories
             //directoryInfo.GetFiles
 
-            GetDir(@"D:\ Work\Skill");
+            GetDir(@"C:\Users\Tiller\OneDrive\DM\source\SkillBox");
             //GetDir(@"C:\Program Files\Windows Defender");
 
 

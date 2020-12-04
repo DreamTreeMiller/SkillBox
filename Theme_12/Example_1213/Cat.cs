@@ -1,0 +1,77 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Example_1213
+{
+    /// <summary>
+    /// Ходят слухи, что все любят котиков...
+    /// </summary>
+    class Cat
+    {
+        /// <summary>
+        /// Создание экземпляра котика
+        /// </summary>
+        /// <param name="Nickname">Кличка</param>
+        /// <param name="Breed">Порода</param>
+        public Cat(string Nickname, string Breed, int Weight)
+        {
+            this.Nickname = Nickname;
+            this.breed = Breed;
+            this.weight = Weight;
+        }
+
+        /// <summary>
+        /// Порода
+        /// </summary>
+        private string breed;
+
+        /// <summary>
+        /// Вес
+        /// </summary>
+        private int weight;
+
+        /// <summary>
+        /// Вес
+        /// </summary>
+        private int Weight { get { return this.weight; } }
+
+        /// <summary>
+        /// Свойство, описываюее кличку
+        /// </summary>
+        public string Nickname { get; set; }
+
+        /// <summary>
+        /// Свойство, описываюее породу
+        /// </summary>
+        public string Breed { get { return "Порода: " + this.breed; } }
+
+        /// <summary>
+        /// Метод, определеющий логику игры котика
+        /// </summary>
+        public void ToPlay() { Console.WriteLine($"{this.Nickname} играет..."); }
+
+        /// <summary>
+        /// Метод, определеющий логику сна котика
+        /// </summary>
+        public void ToSleep() { Console.WriteLine($"{this.Nickname} спит..."); }
+
+        /// <summary>
+        /// Метод, определеющий логику питания котика
+        /// </summary>
+        public void ToEat() { Console.WriteLine($"{this.Nickname} кушает..."); }
+
+        /// <summary>
+        /// Мяуканье котика
+        /// </summary>
+        public void ToMew() { Console.WriteLine($"Мяу!"); }
+
+        public override string ToString()
+        {
+            return $"{Nickname,10} {breed,10} {Weight,3}";
+        }
+
+    }
+}
