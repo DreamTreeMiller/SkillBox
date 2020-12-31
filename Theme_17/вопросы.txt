@@ -1,0 +1,14 @@
+вопросы для прояснения
+sqlconnection
+using (sqlconnection)
+можно ли создать один раз, а потом открывать в 
+
+
+try {conn.Open();} catch {} finally {conn.close() }
+чем всякий раз делать юзинг с 
+new SqlConnection - сильно ли это затратная операция?
+
+Как MessageBox.Show в Net Core 5.0 засунуть?
+
+Купить MSoffice 365
+Купить VPN

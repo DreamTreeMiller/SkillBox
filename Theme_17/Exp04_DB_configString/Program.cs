@@ -9,9 +9,7 @@ namespace Exp04_DB_configString
 	{
 		static void Main(string[] args)
 		{
-			string? GoodBankCS = GetGoodBankConfigurationString();
-			if (GoodBankCS == null) 
-				GoodBankCS = AddGoodBankCSToConfigFile();
+			string GoodBankCS = GetGoodBankConfigurationString();
 
 			SqlConnectionStringBuilder strBuilder = default;
 			// Check if configuration string is correct
@@ -27,20 +25,20 @@ namespace Exp04_DB_configString
 				GoodBankCS = CorrectGoodBankCSinConfigFile();
 				strBuilder = new SqlConnectionStringBuilder(GoodBankCS);
 			}
-
+			string gbdbName = strBuilder.InitialCatalog;
 			WriteLine(GoodBankCS);
-			WriteLine("Data base name = " + strBuilder.InitialCatalog);
+			WriteLine("Data base name = " + gbdbName);
 			Write("Press Enter ..."); ReadLine();
 
-			if (DoesDBExist(strBuilder.InitialCatalog))
+			if (DoesDBExist(gbdbName))
 			{
-				WriteLine($"Database {strBuilder.InitialCatalog} already exists");
+				WriteLine($"Database {gbdbName} already exists");
 			}
 			else
 			{
-				WriteLine($"Database {strBuilder.InitialCatalog} does not exist.");
-				CreateDB(strBuilder.InitialCatalog);
-				WriteLine($"Database {strBuilder.InitialCatalog} was created!");
+				WriteLine($"Database {gbdbName} does not exist.");
+				CreateDB(gbdbName);
+				WriteLine($"Database {gbdbName} was created!");
 			}
 
 			using (SqlConnection GoodBankConn = new SqlConnection(GoodBankCS))
@@ -49,14 +47,31 @@ namespace Exp04_DB_configString
 				{
 					GoodBankConn.Open();
 					WriteLine();
-					WriteLine($"Database {strBuilder.InitialCatalog} state = " + GoodBankConn.State);
+					WriteLine($"Database {gbdbName} state = " + GoodBankConn.State);
 				}
 				catch (Exception ex)
 				{
 					WriteLine();
 					WriteLine($"Exception = {ex.Message}");
 				}
+
+				string cmdText = @$"USE {gbdbName};" 
+					+ $"SELECT TABLE_NAME FROM [{gbdbName}].INFORMATION_SCHEMA.TABLES"
+					;
+				SqlCommand cmd = new SqlCommand(cmdText, GoodBankConn);
+				SqlDataReader tablesList;
+				try
+				{
+					tablesList = cmd.ExecuteReader();
+					while (tablesList.Read())
+						WriteLine((string)tablesList[0]);
+				}
+				catch (Exception ex) 
+				{
+					WriteLine("Exception " + ex.Message);
+				}
 			}
+
 
 		}
 
@@ -67,21 +82,25 @@ namespace Exp04_DB_configString
 		/// Configuration string associated with "GoodBank",
 		/// null otherwise
 		/// </returns>
-		public static string? GetGoodBankConfigurationString()
+		public static string GetGoodBankConfigurationString()
 		{
 			string GoodBankCS = null;
 			// here we set the users connection string for the database
 			// Get the application configuration file.
-			Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+			Configuration config = 
+				ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
 
 			// Get the connection strings section.
 			ConnectionStringsSection csSection = config.ConnectionStrings;
+
 			foreach (ConnectionStringSettings cs in csSection.ConnectionStrings)
 				if (cs.Name == "GoodBank")
 				{
 					GoodBankCS = cs.ConnectionString;
 					break;
 				}
+			if (GoodBankCS == null)
+				GoodBankCS = AddGoodBankCSToConfigFile();
 			return GoodBankCS;
 		}
 
@@ -143,13 +162,30 @@ namespace Exp04_DB_configString
 		/// <returns>Connection string</returns>
 		public static string GetMasterConnectionString()
 		{
-			return new SqlConnectionStringBuilder()
-			{
-				DataSource			= @"(localdb)\MSSQLLocalDB",
-				InitialCatalog		= "master",
-				IntegratedSecurity	= true,
-				Pooling				= true
-			}.ConnectionString;
+			string masterCS = default;
+			// here we set the users connection string for the database
+			// Get the application configuration file.
+			Configuration config =
+				ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+
+			// Get the connection strings section.
+			ConnectionStringsSection csSection = config.ConnectionStrings;
+
+			foreach (ConnectionStringSettings cs in csSection.ConnectionStrings)
+				if (cs.Name == "DefaultConfiguration")
+				{
+					masterCS = cs.ConnectionString;
+					break;
+				}
+			return (masterCS != null)? 
+					masterCS :
+					new SqlConnectionStringBuilder()
+					{
+						DataSource			= @"(localdb)\MSSQLLocalDB",
+						InitialCatalog		= "master",
+						IntegratedSecurity	= true,
+						Pooling				= true
+					}.ConnectionString;
 		}
 
 		/// <summary>

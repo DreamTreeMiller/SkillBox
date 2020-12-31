@@ -64,7 +64,6 @@ namespace Example_1751
                      SET @id = @@IDENTITY;";
 
             da.InsertCommand = new SqlCommand(sql, con);
-
             da.InsertCommand.Parameters.Add("@id", SqlDbType.Int, 4, "id").Direction = ParameterDirection.Output;
             da.InsertCommand.Parameters.Add("@workerName", SqlDbType.NVarChar, 20, "workerName");
             da.InsertCommand.Parameters.Add("@idBoss", SqlDbType.Int, 4, "idBoss");
@@ -94,7 +93,7 @@ namespace Example_1751
 
             da.DeleteCommand = new SqlCommand(sql, con);
             da.DeleteCommand.Parameters.Add("@id", SqlDbType.Int, 4, "id");
-
+            //da.SelectCommand.Container.Add()
             #endregion
 
             da.Fill(dt);

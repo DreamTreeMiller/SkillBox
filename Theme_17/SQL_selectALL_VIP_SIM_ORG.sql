@@ -9,7 +9,7 @@ FROM	(SELECT
 			 [Email],
 			 [Address]
 		FROM	VIPclients, Clients
-		WHERE	Clients.id = VIPclients.ContactData 
+		WHERE	Clients.id = VIPclients.id 
 		) AS vip
 UNION SELECT
 		Clients.id AS MainID,
@@ -19,7 +19,7 @@ UNION SELECT
 		[Email],
 		[Address]
 FROM	SIMclients, Clients
-WHERE	Clients.id = SIMclients.ContactData
+WHERE	Clients.id = SIMclients.id
 UNION SELECT
 		Clients.id AS MainID,
 		'Organization' AS [ClientType],
@@ -28,8 +28,7 @@ UNION SELECT
 		[Email],
 		[Address]
 FROM	ORGclients, Clients
-WHERE	Clients.id = ORGclients.ContactData
+WHERE	Clients.id = ORGclients.id
 ORDER BY [ClientType] DESC
 
-EXEC sp_databases;
-SELECT Name FROM master.sys.databases
+
